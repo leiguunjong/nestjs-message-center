@@ -26,9 +26,9 @@ export class UsersService {
       // use await to ensure go to catch when something go wrong
       // await住，在duplicate username时报错走到catch
       await this.userRepository.save(user);
-      return { msg: 'register success' }
+      return { code:1001, msg: 'register success' }
     } catch (e) {
-      throw new UnauthorizedException(e?.sqlMessage);
+      return { code:1002, msg: 'register fail' }
     }
   }
 

@@ -6,6 +6,7 @@ import { Message } from './message.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from 'src/guards/authorization/roles.guard';
 import { UsersModule } from 'src/guards/authentication/users/users.module';
+import { UserMessageStatus } from 'src/guards/authentication/users/user-message-status.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { UsersModule } from 'src/guards/authentication/users/users.module';
       autoLoadEntities: true,
       synchronize: true,     // 自动同步数据库结构（生产环境建议关闭）
     }),
-    TypeOrmModule.forFeature([Message]),
+    TypeOrmModule.forFeature([Message, UserMessageStatus]),
     UsersModule // authGuard需要用到usersService
   ],
   controllers: [MessageController],

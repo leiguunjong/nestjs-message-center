@@ -13,9 +13,9 @@ export class Message {
   @Column()
   content: string;
 
-  @Expose({groups: ['user']})
-  @Column({default: false})
-  isRead: boolean;
+  // @Expose({groups: ['user']})
+  // @Column({default: false})
+  // isRead: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Expose({name: 'created_at'})

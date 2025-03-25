@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { Message } from './message.entity';
 import { Roles } from '../guards/authorization/roles.decorator';
@@ -26,10 +26,16 @@ export class MessageController {
         return this.messageService.getMessage();
     }
 
+    @Get('with_status')
+    @Roles(Role.User)
+    getMessageWithStatus(@Req() req): Promise<Message[]> {   
+        return this.messageService.getMessageWithStatus(req.user.sub);
+    }
+
     @Put(':id')
-    @Roles(Role.Admin)
-    readMessage(@Param('id') id: string){
-        return this.messageService.updateReadState(+id);
+    @Roles(Role.User)
+    readMessage(@Req() req, @Param('id') id: string){
+        return this.messageService.updateReadState(req.user.sub, +id);
     }
 
     @Delete(':id')

@@ -1,6 +1,10 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class UpdateReadDto {
+  @IsNumber()
+  @IsNotEmpty()
+  code: number;
+  
   @IsString()
   @IsNotEmpty()
   msg: string;
