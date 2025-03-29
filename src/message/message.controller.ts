@@ -35,12 +35,12 @@ export class MessageController {
     @Put(':id')
     @Roles(Role.User)
     readMessage(@Req() req, @Param('id') id: string){
-        return this.messageService.updateReadState(req.user.sub, +id);
+        return this.messageService.updateReadStatus(req.user.sub, +id);
     }
 
     @Delete(':id')
     @Roles(Role.Admin)
-    deleteMessage(@Param('id') id: string): Promise<void> {
+    deleteMessage(@Param('id') id: string) {
         return this.messageService.deleteMessage(+id);
     }
 

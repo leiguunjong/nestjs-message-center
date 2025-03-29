@@ -4,6 +4,7 @@ import { Message } from './message.entity';
 import { Repository } from 'typeorm';
 import { UpdateReadDto } from './update-read.dto';
 import { UserMessageStatus } from '../guards/authentication/users/user-message-status.entity';
+import { deleteMessageOutputDto } from './delete-message-output.dto';
 
 @Injectable()
 export class MessageService {
@@ -39,7 +40,8 @@ export class MessageService {
                 'message.content AS content',
                 'message.createdAt AS created_at',
                 // with COALESCE to handle raw data 使用COALESCE处理未记录情况
-                'COALESCE(ums.isRead, false) as isRead' // typeorm gives 0 if false typeorm会把false转0
+                'COALESCE(ums.isRead, false) as isRead' /** typeorm gives 0 if false
+                                                            typeorm会把false转0 */
             ])
             .getRawMany();
         return rawMessage.map(msg => {
@@ -56,18 +58,28 @@ export class MessageService {
     }
 
     // 更新已读状态
-    async updateReadState(userId: number, messageId: number): Promise<UpdateReadDto> {
+    async updateReadStatus(userId: number, messageId: number): Promise<UpdateReadDto> {
         return this.umsRepository
             .upsert(
                 { userId, messageId, isRead: true },
                 ['userId', 'messageId']
             )
-            .then(() => { return { code: 1101, msg: 'update read state success' } })
-            .catch(() => { return { code: 1102, msg: 'update read state fail' } });
+            .then(() => { return { code: 1101, msg: 'update read status success' } })
+            .catch(() => { return { code: 1102, msg: 'update read status fail' } });
     }
 
     // 删除消息
-    async deleteMessage(id: number): Promise<void> {
-        await this.msgRepository.delete(id);
+    async deleteMessage(id: number): Promise<deleteMessageOutputDto> {
+        // 先加载关联实体（触发级联删除）
+        const message = await this.msgRepository.findOne({
+            where: { id },
+            relations: ['statuses']
+        });
+        if (message) {
+            return this.msgRepository.remove(message)
+            .then(() => { return { code: 1201, msg: 'delete message success' }})
+            .catch(() => { return { code: 1202, msg: 'delete message fail' } });
+        }
+        return { code: 1203, msg: 'delete message fail.message id not found' }
     }
 }

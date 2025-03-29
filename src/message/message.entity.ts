@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { UserMessageStatus } from 'src/guards/authentication/users/user-message-status.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Message {
@@ -13,9 +14,12 @@ export class Message {
   @Column()
   content: string;
 
-  // @Expose({groups: ['user']})
-  // @Column({default: false})
-  // isRead: boolean;
+  @OneToMany(
+    () => UserMessageStatus,
+    (status) => status.message,
+    { cascade: true } // cascading delete 启用级联删除
+  )
+  statuses: UserMessageStatus[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @Expose({name: 'created_at'})
