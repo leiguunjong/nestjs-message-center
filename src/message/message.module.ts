@@ -18,7 +18,7 @@ import { UserMessageStatus } from 'src/guards/authentication/users/user-message-
       password: 'your_password', // 密码
       database: 'message',   // 数据库名
       autoLoadEntities: true,
-      synchronize: true,     // 自动同步数据库结构（生产环境建议关闭）
+      synchronize: false,     // 自动同步数据库结构（生产环境建议关闭）
     }),
     TypeOrmModule.forFeature([Message, UserMessageStatus]),
     UsersModule // authGuard需要用到usersService
