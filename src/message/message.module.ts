@@ -3,33 +3,31 @@ import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './message.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from 'src/guards/authorization/roles.guard';
 import { UsersModule } from 'src/guards/authentication/users/users.module';
 import { UserMessageStatus } from 'src/guards/authentication/users/user-message-status.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',      // 数据库主机
-      port: 3306,            // 端口
-      username: 'your_username',      // 用户名
-      password: 'your_password', // 密码
-      database: 'message',   // 数据库名
-      autoLoadEntities: true,
-      synchronize: false,     // 自动同步数据库结构（生产环境建议关闭）
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+          type: 'mysql',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USER'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_NAME'),
+          autoLoadEntities: true,
+          synchronize: false,
+        })
     }),
     TypeOrmModule.forFeature([Message, UserMessageStatus]),
     UsersModule // authGuard需要用到usersService
   ],
   controllers: [MessageController],
   providers: [
-    MessageService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard
-    // }
+    MessageService
   ]
 })
 export class MessageModule { }

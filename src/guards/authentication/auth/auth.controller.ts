@@ -10,8 +10,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() dto: LoginInputDto) {
-    return this.authService.signIn(dto.username, dto.password);
+  login(@Body() dto: LoginInputDto) {
+    return this.authService.login(dto.username, dto.password);
   }
 
   @Post('register')
