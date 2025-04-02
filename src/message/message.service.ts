@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateReadDto } from './update-read.dto';
 import { UserMessageStatus } from '../guards/authentication/users/user-message-status.entity';
 import { deleteMessageOutputDto } from './delete-message-output.dto';
+import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 
 @Injectable()
 export class MessageService {
@@ -13,6 +14,8 @@ export class MessageService {
         private readonly msgRepository: Repository<Message>,
         @InjectRepository(UserMessageStatus)
         private readonly umsRepository: Repository<UserMessageStatus>,
+        @InjectPinoLogger(MessageService.name)
+        private readonly logger: PinoLogger
     ) { }
 
     // 创建消息
@@ -65,7 +68,10 @@ export class MessageService {
                 ['userId', 'messageId']
             )
             .then(() => { return { code: 1101, msg: 'update read status success' } })
-            .catch(() => { return { code: 1102, msg: 'update read status fail' } });
+            .catch(err => { 
+                this.logger.error(err);
+                return { code: 1102, msg: 'update read status fail' };
+            });
     }
 
     // 删除消息
@@ -75,11 +81,16 @@ export class MessageService {
             where: { id },
             relations: ['statuses']
         });
+        const errMsg = 'delete message fail';
         if (message) {
             return this.msgRepository.remove(message)
             .then(() => { return { code: 1201, msg: 'delete message success' }})
-            .catch(() => { return { code: 1202, msg: 'delete message fail' } });
+            .catch(err => {
+                this.logger.error(err);
+                return { code: 1202, msg: errMsg } }
+            );
         }
-        return { code: 1203, msg: 'delete message fail.message id not found' }
+        this.logger.error('message id not found');
+        return { code: 1203, msg: errMsg }
     }
 }

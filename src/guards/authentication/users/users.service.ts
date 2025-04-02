@@ -8,13 +8,16 @@ import { User } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegisterOutputDto } from './register-output.dto';
+import { InjectPinoLogger, Logger } from "nestjs-pino";
 
 @Injectable()
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @InjectPinoLogger(UsersService.name)
+    private readonly logger: Logger
   ) { }
 
   async findOne(username: string): Promise<User | null> {
@@ -27,7 +30,8 @@ export class UsersService {
       // await住，在duplicate username时报错走到catch
       await this.userRepository.save(user);
       return { code:1001, msg: 'register success' }
-    } catch (e) {
+    } catch (err) {
+      this.logger.error(err);
       return { code:1002, msg: 'register fail' }
     }
   }

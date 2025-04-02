@@ -8,17 +8,24 @@ import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
+import { Logger, InjectPinoLogger } from "nestjs-pino";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService, private usersService: UsersService) {}
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UsersService,
+    @InjectPinoLogger(AuthGuard.name)
+    private logger: Logger
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     console.log('authGuard--------------------------------');
-    
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
+      this.logger.warn('lack token')
       throw new UnauthorizedException();
     }
     try {
@@ -35,9 +42,9 @@ export class AuthGuard implements CanActivate {
       // so that we can access it in our route handlers
       request.user = payload;
       return true;
-    } catch(e) {
-      console.log(e);
-      throw new UnauthorizedException(e?.message);
+    } catch (err) {
+      this.logger.error(err)
+      throw new UnauthorizedException(err?.message);
     }
   }
 
