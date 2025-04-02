@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './message.entity';
 import { Repository } from 'typeorm';
@@ -68,9 +68,12 @@ export class MessageService {
                 ['userId', 'messageId']
             )
             .then(() => { return { code: 1101, msg: 'update read status success' } })
-            .catch(err => { 
+            .catch(err => {
                 this.logger.error(err);
-                return { code: 1102, msg: 'update read status fail' };
+                if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+                    throw new BadRequestException({ code: 1102, msg: 'message id not exists' });
+                }
+                throw new InternalServerErrorException({ code: 1103, msg: 'server error' });
             });
     }
 
@@ -82,15 +85,16 @@ export class MessageService {
             relations: ['statuses']
         });
         const errMsg = 'delete message fail';
-        if (message) {
-            return this.msgRepository.remove(message)
-            .then(() => { return { code: 1201, msg: 'delete message success' }})
+        if (!message) {
+            this.logger.error('message id not found');
+            throw new BadRequestException({ code: 1202, msg: 'message id not exists' });
+        }
+        return this.msgRepository.remove(message)
+            .then(() => { return { code: 1201, msg: 'delete message success' } })
             .catch(err => {
                 this.logger.error(err);
-                return { code: 1202, msg: errMsg } }
+                throw new InternalServerErrorException({ code: 1203, msg: errMsg });
+            }
             );
-        }
-        this.logger.error('message id not found');
-        return { code: 1203, msg: errMsg }
     }
 }

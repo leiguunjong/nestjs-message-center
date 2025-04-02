@@ -1,7 +1,8 @@
 import {
   ClassSerializerInterceptor,
+  ConflictException,
   Injectable,
-  UnauthorizedException,
+  InternalServerErrorException,
   UseInterceptors
 } from '@nestjs/common';
 import { User } from './users.entity';
@@ -32,7 +33,10 @@ export class UsersService {
       return { code:1001, msg: 'register success' }
     } catch (err) {
       this.logger.error(err);
-      return { code:1002, msg: 'register fail' }
+      if(err.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException({ code: 1002, msg: 'username exists' });
+      }
+      throw new InternalServerErrorException({ code: 1003, msg: 'server error' });
     }
   }
 
