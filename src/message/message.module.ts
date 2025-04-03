@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Message } from './message.entity';
+import { Message } from './entities/message.entity';
 import { UsersModule } from 'src/users/users.module';
-import { UserMessageStatus } from 'src/users/user-message-status.entity';
+import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
@@ -19,11 +19,10 @@ import { ConfigService } from '@nestjs/config';
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_NAME'),
           autoLoadEntities: true,
-          synchronize: false,
         })
     }),
     TypeOrmModule.forFeature([Message, UserMessageStatus]),
-    UsersModule // authGuard需要用到usersService
+    UsersModule
   ],
   controllers: [MessageController],
   providers: [

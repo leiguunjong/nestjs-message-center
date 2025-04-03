@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
-import { User } from './users.entity';
-import { Message } from 'src/message/message.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, Unique, JoinColumn } from 'typeorm';
+import { User } from '../../users/users.entity';
+import { Message } from './message.entity';
 
 @Entity()
 @Unique(['userId', 'messageId']) /** Unique Constraint

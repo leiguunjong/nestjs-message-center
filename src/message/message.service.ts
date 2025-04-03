@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Message } from './message.entity';
+import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
-import { UpdateReadDto } from './update-read.dto';
-import { UserMessageStatus } from '../users/user-message-status.entity';
-import { deleteMessageOutputDto } from './delete-message-output.dto';
+import { UserMessageStatus } from './entities/user-message-status.entity';
+import { OutputDto } from './dto/output.dto';
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 
 @Injectable()
@@ -18,20 +17,20 @@ export class MessageService {
         private readonly logger: PinoLogger
     ) { }
 
-    // 创建消息
     async create(msg: Partial<Message>): Promise<Message> {
         return this.msgRepository.save(msg);
     }
 
-    // 获取消息
     async getMessage(): Promise<Message[]> {
         return this.msgRepository.find();
     }
 
     async getMessageWithStatus(userId: number): Promise<Message[]> {
-        let rawMessage = await this.msgRepository
+        const rawMessage = await this.msgRepository
             .createQueryBuilder('message')
             .leftJoinAndSelect(
+                // 存放已读状态的表
+                // A table that holds read state
                 'user_message_status',
                 'ums',
                 'ums.messageId = message.id AND ums.userId = :userId',
@@ -55,45 +54,40 @@ export class MessageService {
         });
     }
 
-    // 获取某条消息
-    async findOne(id: number): Promise<Message | null> {
-        return this.msgRepository.findOneBy({ id });
-    }
-
-    // 更新已读状态
-    async updateReadStatus(userId: number, messageId: number): Promise<UpdateReadDto> {
-        return this.umsRepository
-            .upsert(
-                { userId, messageId, isRead: true },
-                ['userId', 'messageId']
-            )
-            .then(() => { return { code: 1101, msg: 'update read status success' } })
+    async updateReadStatus(userId: number, messageId: number): Promise<OutputDto> {
+        const entity = await this.umsRepository.findOne({ where: { userId, messageId } });
+        if (entity) {
+            const msg ='duplicate message id';
+            this.logger.error(msg);
+            throw new ConflictException({ code: 1101, msg });
+        }
+        return this.umsRepository.save({ userId, messageId, isRead: true })
+            .then(() => ({ code: 1102, msg: 'update read status success' }))
             .catch(err => {
                 this.logger.error(err);
                 if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-                    throw new BadRequestException({ code: 1102, msg: 'message id not exists' });
+                    throw new NotFoundException({ code: 1103, msg: 'message id not found' });
                 }
-                throw new InternalServerErrorException({ code: 1103, msg: 'server error' });
+                throw new InternalServerErrorException({ code: 1104, msg: 'server error' });
             });
     }
 
-    // 删除消息
-    async deleteMessage(id: number): Promise<deleteMessageOutputDto> {
+    async deleteMessage(id: number): Promise<OutputDto> {
         // 先加载关联实体（触发级联删除）
+        // Related entities are loaded first (triggering a cascade delete)
         const message = await this.msgRepository.findOne({
             where: { id },
             relations: ['statuses']
         });
-        const errMsg = 'delete message fail';
         if (!message) {
             this.logger.error('message id not found');
-            throw new BadRequestException({ code: 1202, msg: 'message id not exists' });
+            throw new NotFoundException({ code: 1201, msg: 'message id not found' });
         }
         return this.msgRepository.remove(message)
-            .then(() => { return { code: 1201, msg: 'delete message success' } })
+            .then(() => { return { code: 1202, msg: 'delete message success' } })
             .catch(err => {
                 this.logger.error(err);
-                throw new InternalServerErrorException({ code: 1203, msg: errMsg });
+                throw new InternalServerErrorException({ code: 1203, msg: 'delete message fail' });
             }
             );
     }

@@ -1,10 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
-import { UserMessageStatus } from 'src/users/user-message-status.entity';
+import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Message {
-  // @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 

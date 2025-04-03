@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class deleteMessageOutputDto {
+export class OutputDto {
   @IsNumber()
   @IsNotEmpty()
   code: number;
