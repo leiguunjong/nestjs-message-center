@@ -3,8 +3,8 @@ import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './message.entity';
-import { UsersModule } from 'src/guards/authentication/users/users.module';
-import { UserMessageStatus } from 'src/guards/authentication/users/user-message-status.entity';
+import { UsersModule } from 'src/users/users.module';
+import { UserMessageStatus } from 'src/users/user-message-status.entity';
 import { ConfigService } from '@nestjs/config';
 
 @Module({

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { jwtConstants } from '../authentication/constants';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
 import { Logger, InjectPinoLogger } from "nestjs-pino";

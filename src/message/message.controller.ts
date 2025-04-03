@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { Message } from './message.entity';
-import { Roles } from '../guards/authorization/roles.decorator';
-import { Role } from '../guards/authorization/role.enum';
-import { RolesGuard } from 'src/guards/authorization/roles.guard';
-import { AuthGuard } from 'src/guards/authentication/auth/auth.guard';
+import { Roles } from '../authorization/roles.decorator';
+import { Role } from '../authorization/role.enum';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { MessageDto } from './message.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 

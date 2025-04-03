@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './message.entity';
 import { Repository } from 'typeorm';
 import { UpdateReadDto } from './update-read.dto';
-import { UserMessageStatus } from '../guards/authentication/users/user-message-status.entity';
+import { UserMessageStatus } from '../users/user-message-status.entity';
 import { deleteMessageOutputDto } from './delete-message-output.dto';
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 

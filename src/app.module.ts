@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MessageModule } from './message/message.module';
-import { AuthModule } from './guards/authentication/auth/auth.module';
+import { AuthModule } from './authentication/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';

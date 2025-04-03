@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { UserMessageStatus } from 'src/guards/authentication/users/user-message-status.entity';
+import { UserMessageStatus } from 'src/users/user-message-status.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
