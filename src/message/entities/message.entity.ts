@@ -1,6 +1,6 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Message {
@@ -20,7 +20,7 @@ export class Message {
   )
   statuses: UserMessageStatus[];
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   @Expose({name: 'created_at'})
   createdAt: Date;
 }

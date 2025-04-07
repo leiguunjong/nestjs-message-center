@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
 
 
@@ -21,7 +21,7 @@ export class User {
   @Exclude()
   role: string;
 
-  @Column({ type: 'timestamp', default: 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   @Expose()
   createdAt: Date;
 }

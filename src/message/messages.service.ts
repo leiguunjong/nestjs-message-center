@@ -7,13 +7,13 @@ import { OutputDto } from './dto/output.dto';
 import { PinoLogger, InjectPinoLogger } from "nestjs-pino";
 
 @Injectable()
-export class MessageService {
+export class MessagesService {
     constructor(
         @InjectRepository(Message)
         private readonly msgRepository: Repository<Message>,
         @InjectRepository(UserMessageStatus)
         private readonly umsRepository: Repository<UserMessageStatus>,
-        @InjectPinoLogger(MessageService.name)
+        @InjectPinoLogger(MessagesService.name)
         private readonly logger: PinoLogger
     ) { }
 

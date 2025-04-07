@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, HttpStatus, Patch } from '@nestjs/common';
-import { MessageService } from './message.service';
+import { MessagesService } from './messages.service';
 import { Message } from './entities/message.entity';
 import { Roles } from '../decorator/roles.decorator';
 import { Role } from '../enum/role.enum';
@@ -8,12 +8,12 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { MessageDto } from './dto/message.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-@ApiTags('message')
+@ApiTags('messages')
 @ApiBearerAuth()
-@Controller('message')
+@Controller('messages')
 @UseGuards(AuthGuard, RolesGuard)
-export class MessageController {
-    constructor(private readonly messageService: MessageService) { }
+export class MessagesController {
+    constructor(private readonly messageService: MessagesService) { }
 
     @Post()
     @ApiOperation({ summary: '创建消息', description: '需要管理员权限' })

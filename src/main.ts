@@ -8,17 +8,23 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useLogger(app.get(Logger));
-  app.enableCors(); // 跨域
+  app.enableCors();
+  // use Pipes for the validation and transformation of input data（dto）
+  // 利用管道验证和转换输入数据
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,        // 自动移除非装饰器声明的字段
-      forbidNonWhitelisted: true, // 抛出错误提示非法字段
-      transform: true,        // 自动转换请求数据到 DTO 类型
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
+  // use Interceptors for the filtration of output data（Sensitive fields）
+  // 利用拦截器过滤输出数据的敏感字段
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const configService = app.get(ConfigService);
   const appName = configService.get<string>('APP_NAME')!;
+  console.log(typeof configService.get<boolean>('DB_SYNCHRONIZE'),'--------DB_SYNCHRONIZE');
+  
   const config = new DocumentBuilder()
   .setTitle(appName)
   .setDescription(`${appName} API document`)
@@ -26,7 +32,7 @@ async function bootstrap() {
   .addBearerAuth()
   .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document); // 127.0.0.1:3000/api
   await app.listen(configService.get('APP_PORT', 3000));
 }
 bootstrap();

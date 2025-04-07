@@ -5,10 +5,10 @@ import {
   InternalServerErrorException,
   UseInterceptors
 } from '@nestjs/common';
-import { User } from './users.entity';
+import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RegisterOutputDto } from './register-output.dto';
+import { RegisterOutputDto } from '../authentication/dto/register-output.dto';
 import { InjectPinoLogger, Logger } from "nestjs-pino";
 
 @Injectable()
@@ -27,8 +27,6 @@ export class UsersService {
 
   async register(user: Partial<User>): Promise<RegisterOutputDto> {
     try {
-      // use await to ensure go to catch when something go wrong
-      // await住，在duplicate username时报错走到catch
       await this.userRepository.save(user);
       return { code:1001, msg: 'register success' }
     } catch (err) {

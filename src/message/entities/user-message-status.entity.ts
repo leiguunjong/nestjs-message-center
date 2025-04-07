@@ -1,6 +1,5 @@
-import { Exclude, Expose } from 'class-transformer';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, Unique, JoinColumn } from 'typeorm';
-import { User } from '../../users/users.entity';
+import { User } from '../../users/user.entity';
 import { Message } from './message.entity';
 
 @Entity()
