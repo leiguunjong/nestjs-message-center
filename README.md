@@ -55,6 +55,7 @@ src/
 ├── users/ # User management module
 ├── app.module.ts # Main application module
 └── main.ts # Application entry point
+```
 ---
 
 ## Requirements
