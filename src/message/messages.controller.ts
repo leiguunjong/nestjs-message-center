@@ -11,6 +11,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 @ApiTags('messages')
 @ApiBearerAuth()
 @Controller('messages')
+// use AuthGuard first 先使用AuthGuard
 @UseGuards(AuthGuard, RolesGuard)
 export class MessagesController {
     constructor(private readonly messageService: MessagesService) { }

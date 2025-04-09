@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
+import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
 
 
 @Entity()
@@ -8,8 +9,7 @@ export class User {
   @Exclude()
   id: number;
 
-  @Column({unique: true})
-  @Column()
+  @Column({ unique: true })
   @Expose()
   username: string;
 
@@ -17,9 +17,16 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({default: 'user'})
+  @Column({ default: 'user' })
   @Exclude()
   role: string;
+
+  @OneToMany(
+    () => UserMessageStatus,
+    (status) => status.user,
+    { cascade: true }  // cascading delete 启用级联删除
+  )
+  statuses: UserMessageStatus[];
 
   @CreateDateColumn()
   @Expose()

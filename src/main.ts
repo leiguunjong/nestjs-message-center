@@ -22,9 +22,7 @@ async function bootstrap() {
   // 利用拦截器过滤输出数据的敏感字段
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const configService = app.get(ConfigService);
-  const appName = configService.get<string>('APP_NAME')!;
-  console.log(typeof configService.get<boolean>('DB_SYNCHRONIZE'),'--------DB_SYNCHRONIZE');
-  
+  const appName = configService.get<string>('APP_NAME')!; 
   const config = new DocumentBuilder()
   .setTitle(appName)
   .setDescription(`${appName} API document`)

@@ -55,21 +55,19 @@ export class MessagesService {
     }
 
     async updateReadStatus(userId: number, messageId: number): Promise<OutputDto> {
-        const entity = await this.umsRepository.findOne({ where: { userId, messageId } });
-        if (entity) {
-            const msg ='duplicate message id';
-            this.logger.error(msg);
-            throw new ConflictException({ code: 1101, msg });
-        }
         return this.umsRepository.save({ userId, messageId, isRead: true })
-            .then(() => ({ code: 1102, msg: 'update read status success' }))
+            .then(() => ({ code: 1101, msg: 'update read status success' }))
             .catch(err => {
                 this.logger.error(err);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    throw new ConflictException({ code: 1102, msg: 'duplicate message id' });
+                }
                 if (err.code === 'ER_NO_REFERENCED_ROW_2') {
                     throw new NotFoundException({ code: 1103, msg: 'message id not found' });
                 }
                 throw new InternalServerErrorException({ code: 1104, msg: 'server error' });
-            });
+            }
+            );
     }
 
     async deleteMessage(id: number): Promise<OutputDto> {

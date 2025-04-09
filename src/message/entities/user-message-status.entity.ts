@@ -3,13 +3,7 @@ import { User } from '../../users/user.entity';
 import { Message } from './message.entity';
 
 @Entity()
-@Unique(['userId', 'messageId']) /** Unique Constraint
-                                     additional SQL execution is required:
-                                     ALTER TABLE user_message_status ADD UNIQUE INDEX idx_user_message (userId, messageId);
-                                     唯一约束
-                                     需要额外执行SQL语句：
-                                     ALTER TABLE user_message_status ADD UNIQUE INDEX idx_user_message (userId, messageId);
-                                  */
+@Unique(['userId', 'messageId']) // Joint unique index 联合唯一索引
 export class UserMessageStatus {
   @PrimaryGeneratedColumn()
   id: number;
