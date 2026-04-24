@@ -21,8 +21,20 @@ export class MessagesService {
         return this.msgRepository.save(msg);
     }
 
-    async getMessage(): Promise<Message[]> {
-        return this.msgRepository.find();
+    async getMessage(page: number = 1, pageSize?: number): Promise<{ data: Message[]; total: number }> {
+        // 如果 pageSize 未定义，则返回所有数据
+        if (pageSize === undefined) {
+            const allData = await this.msgRepository.find();
+            return { data: allData, total: allData.length };
+        }
+        const skip = (page - 1) * pageSize; // 计算跳过的记录数
+        const [data, total] = await this.msgRepository.findAndCount({
+            skip,
+            take: pageSize,
+            order: { createdAt: 'DESC' }, // 可根据需求排序
+        });
+
+        return { data, total };
     }
 
     async getMessageWithStatus(userId: number): Promise<Message[]> {

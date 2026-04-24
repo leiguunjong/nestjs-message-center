@@ -11,4 +11,9 @@ export class LoginInputDto {
   @IsString()
   @Length(4,20)
   password: string;
+
+  constructor(username: string, password: string) {
+    this.username = username;
+    this.password = password;
+  }
 }

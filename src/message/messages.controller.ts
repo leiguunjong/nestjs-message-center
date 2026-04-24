@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, HttpStatus, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Req, HttpStatus, Patch, Query} from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { Message } from './entities/message.entity';
 import { Roles } from '../decorator/roles.decorator';
@@ -28,8 +28,8 @@ export class MessagesController {
     @ApiOperation({ summary: '获取消息列表' })
     @ApiResponse({ status: HttpStatus.OK, description: '获取消息成功' })
     @Roles(Role.User)
-    getMessage() {
-        return this.messageService.getMessage();
+    getMessage(@Query('page') page: number = 1, @Query('pageSize') pageSize?: number) {
+        return this.messageService.getMessage(page, pageSize);
     }
 
     @Get('with_status')

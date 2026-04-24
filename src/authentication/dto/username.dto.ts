@@ -6,4 +6,8 @@ export class UsernameDto {
   @IsString()
   @IsNotEmpty()
   username: string;
+
+  constructor(username: string) {
+    this.username = username;
+  }
 }
