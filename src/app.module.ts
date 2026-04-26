@@ -3,14 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MessagesModule } from './message/messages.module';
 import { AuthModule } from './authentication/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    MessagesModule,
-    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [
@@ -47,6 +46,21 @@ import { join } from 'path';
         }
       }
     }),
+    TypeOrmModule.forRootAsync({
+          inject: [ConfigService],
+          useFactory: (configService: ConfigService) => ({
+              type: 'mysql',
+              host: configService.get<string>('DB_HOST'),
+              port: configService.get<number>('DB_PORT'),
+              username: configService.get<string>('DB_USER'),
+              password: configService.get<string>('DB_PASSWORD'),
+              database: configService.get<string>('DB_NAME'),
+              autoLoadEntities: true,
+              synchronize: configService.get<string>('NODE_ENV') === 'development',
+            })
+        }),
+    MessagesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService]
