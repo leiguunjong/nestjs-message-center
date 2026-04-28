@@ -5,15 +5,10 @@ export class MessageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  content: string;
-
-  constructor(title: string, content: string) {
-    this.title = title;
-    this.content = content;
-  }
+  content!: string;
 }

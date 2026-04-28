@@ -3,10 +3,10 @@ import { MessagesController } from './messages.controller';
 import { MessagesService } from './messages.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
-import { UsersModule } from 'src/users/users.module';
-import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
+import { UsersModule } from '../users/users.module';
+import { UserMessageStatus } from './entities/user-message-status.entity';
 import { ConfigService } from '@nestjs/config';
-import { AuthModule } from 'src/authentication/auth.module';
+import { AuthModule } from '../authentication/auth.module';
 
 @Module({
   imports: [

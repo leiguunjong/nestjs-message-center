@@ -5,9 +5,5 @@ export class UsernameDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  username: string;
-
-  constructor(username: string) {
-    this.username = username;
-  }
+  username!: string;
 }

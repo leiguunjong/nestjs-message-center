@@ -3,9 +3,9 @@ import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 export class OutputDto {
   @IsNumber()
   @IsNotEmpty()
-  code: number;
+  code!: number;
   
   @IsString()
   @IsNotEmpty()
-  msg: string;
+  msg!: string;
 }

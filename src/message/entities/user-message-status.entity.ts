@@ -6,26 +6,26 @@ import { Message } from './message.entity';
 @Unique(['userId', 'messageId']) // Joint unique index 联合唯一索引
 export class UserMessageStatus {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({default: false})
-  isRead: boolean
+  isRead: boolean = false
 
   @ManyToOne(()=>User)
-  user: User
+  user!: User
 
   @ManyToOne(()=>Message)
-  message: Message
+  message!: Message
 
   @Column()
-  userId: number;
+  userId!: number;
 
   @Column()
-  messageId: number;
+  messageId!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

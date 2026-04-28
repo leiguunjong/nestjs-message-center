@@ -1,34 +1,35 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
-import { UserMessageStatus } from 'src/message/entities/user-message-status.entity';
+import { UserMessageStatus } from '../message/entities/user-message-status.entity';
 
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   @Exclude()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
   @Expose()
-  username: string;
+  username!: string;
 
   @Column()
   @Exclude()
-  password: string;
+  password!: string;
 
   @Column({ default: 'user' })
   @Exclude()
-  role: string;
+  role!: string;
 
   @OneToMany(
     () => UserMessageStatus,
     (status) => status.user,
     { cascade: true }  // cascading delete 启用级联删除
   )
-  statuses: UserMessageStatus[];
+  statuses!: UserMessageStatus[];
 
   @CreateDateColumn()
   @Expose()
-  createdAt: Date;
+  createdAt!: Date;
+
 }

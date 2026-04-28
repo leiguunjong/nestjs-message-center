@@ -3,8 +3,8 @@ import { MessagesService } from './messages.service';
 import { Message } from './entities/message.entity';
 import { Roles } from '../decorator/roles.decorator';
 import { Role } from '../enum/role.enum';
-import { RolesGuard } from 'src/guards/roles.guard';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { AuthGuard } from '../guards/auth.guard';
 import { MessageDto } from './dto/message.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 

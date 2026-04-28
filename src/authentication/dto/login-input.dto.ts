@@ -5,15 +5,10 @@ export class LoginInputDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  username: string;
+  username!: string;
 
   @ApiProperty()
   @IsString()
   @Length(4,20)
-  password: string;
-
-  constructor(username: string, password: string) {
-    this.username = username;
-    this.password = password;
-  }
+  password!: string;
 }
